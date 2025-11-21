@@ -718,8 +718,9 @@ export function useGameActions() {
   const saveGame = async () => {
     gameStore.saveStatus = '保存中...'
 
+    // 将Vue响应式对象转换为普通对象，避免序列化问题
     const saveData = {
-      gameData: gameStore.gameData,
+      gameData: JSON.parse(JSON.stringify(gameStore.gameData)),
       timestamp: new Date().toISOString(),
       version: '1.0'
     }
@@ -734,6 +735,7 @@ export function useGameActions() {
       gameStore.showSuccess('游戏进度已保存!')
     } catch (error: any) {
       gameStore.saveStatus = '保存失败'
+      gameStore.showError('保存失败: ' + error.message)
       throw error
     }
   }
